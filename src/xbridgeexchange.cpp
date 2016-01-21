@@ -47,10 +47,15 @@ bool XBridgeExchange::init()
     {
         std::string label   = s.get<std::string>(*i + ".Title");
         std::string address = s.get<std::string>(*i + ".Address");
+        std::string ip      = s.get<std::string>(*i + ".Ip");
+        unsigned int port   = s.get<unsigned int>(*i + ".Port");
+        std::string user    = s.get<std::string>(*i + ".Username");
+        std::string passwd  = s.get<std::string>(*i + ".Password");
 
-        if (address.empty())
+        if (address.empty() || ip.empty() || port == 0 ||
+                user.empty() || passwd.empty())
         {
-            LOG() << "read wallet " << *i << " with empty address>";
+            LOG() << "read wallet " << *i << " with empty parameters>";
             continue;
         }
 
@@ -70,6 +75,10 @@ bool XBridgeExchange::init()
         }
 
         m_wallets[*i].title   = label;
+        m_wallets[*i].ip      = ip;
+        m_wallets[*i].port    = port;
+        m_wallets[*i].user    = user;
+        m_wallets[*i].passwd  = passwd;
 
         LOG() << "read wallet " << *i << " \"" << label << "\" address <" << address << ">";
     }

@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
     util::init();
 
     XBridgeApp & a = XBridgeApp::instance();
+    a.init(argc, argv);
 
 #ifdef BREAKPAD_ENABLED
     std::wstring name(L"xbridgep2p.exe");

@@ -4,12 +4,13 @@
 #
 #-------------------------------------------------
 
-#QT       += core concurrent
-#greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT       += core gui
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG   -= qt
-CONFIG   += console
-CONFIG   -= app_bundle
+#CONFIG   -= qt
+#CONFIG   += console
+#CONFIG   -= app_bundle
+CONFIG   += app
 CONFIG   += static
 
 #-------------------------------------------------
@@ -35,6 +36,7 @@ message("msvc build, breakpad enabled")
 DEFINES += BREAKPAD_ENABLED
 
 INCLUDEPATH += \
+    $$PWD/src \
     $$PWD/src/3rdparty/breakpad/src
 
 QMAKE_CFLAGS_RELEASE += -Zi
@@ -67,7 +69,16 @@ SOURCES += \
     src/xbridgeexchange.cpp \
     src/xbridgetransaction.cpp \
     src/util/settings.cpp \
-    src/xbridgetransactionmember.cpp
+    src/xbridgetransactionmember.cpp \
+    src/ui/xbridgetransactionsview.cpp \
+    src/ui/xbridgetransactionsmodel.cpp \
+    src/ui/xbridgetransactiondialog.cpp \
+    src/ui/xbridgeaddressbookview.cpp \
+    src/ui/xbridgeaddressbookmodel.cpp \
+    src/bitcoinrpc.cpp \
+    src/json/json_spirit_reader.cpp \
+    src/json/json_spirit_value.cpp \
+    src/json/json_spirit_writer.cpp
 
 #-------------------------------------------------
 HEADERS += \
@@ -84,7 +95,25 @@ HEADERS += \
     src/util/settings.h \
     src/xbridgetransactionmember.h \
     src/version.h \
-    src/config.h
+    src/config.h \
+    src/ui/xbridgetransactionsview.h \
+    src/ui/xbridgetransactionsmodel.h \
+    src/xbridgetransactiondescr.h \
+    src/ui/xbridgetransactiondialog.h \
+    src/ui/xbridgeaddressbookview.h \
+    src/ui/xbridgeaddressbookmodel.h \
+    src/bitcoinrpc.h \
+    src/json/json_spirit.h \
+    src/json/json_spirit_error_position.h \
+    src/json/json_spirit_reader.h \
+    src/json/json_spirit_reader_template.h \
+    src/json/json_spirit_stream_reader.h \
+    src/json/json_spirit_utils.h \
+    src/json/json_spirit_value.h \
+    src/json/json_spirit_writer.h \
+    src/json/json_spirit_writer_template.h \
+    src/bignum.h \
+    src/uiconnector.h
 
 #-------------------------------------------------
 DISTFILES += \
@@ -118,3 +147,6 @@ LIBS += \
     -lcrash_report_sender
 
 } #withbreakpad
+
+RESOURCES += \
+    resource.qrc

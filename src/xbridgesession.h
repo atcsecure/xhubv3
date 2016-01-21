@@ -21,6 +21,13 @@ class XBridgeSession
 {
 public:
     XBridgeSession();
+    XBridgeSession(const std::string & currency,
+                   const std::string & address,
+                   const std::string & port,
+                   const std::string & user,
+                   const std::string & passwd);
+
+    std::string currency() const { return m_currency; }
 
     void start(XBridge::SocketPtr socket);
 
@@ -41,7 +48,12 @@ public:
                               const std::string & name,
                               const std::string & address);
 
+    void getAddressBook();
+    void requestAddressBook();
+
 private:
+    void init();
+
     void disconnect();
 
     void doReadHeader(XBridgePacketPtr packet,
@@ -64,7 +76,7 @@ private:
     bool decryptPacket(XBridgePacketPtr packet);
 
     void sendPacket(const std::vector<unsigned char> & to, XBridgePacketPtr packet);
-    void sendPacketBroadcast(XBridgePacketPtr packet);
+    bool sendPacketBroadcast(XBridgePacketPtr packet);
 
     // return true if packet not for me, relayed
     bool relayPacket(XBridgePacketPtr packet);
@@ -87,16 +99,33 @@ private:
     bool finishTransaction(XBridgeTransactionPtr tr);
     bool sendCancelTransaction(const uint256 & txid);
     bool rollbackTransaction(XBridgeTransactionPtr tr);
+    bool revertXBridgeTransaction(const uint256 & id);
 
     bool processBitcoinTransactionHash(XBridgePacketPtr packet);
 
     bool processAddressBookEntry(XBridgePacketPtr packet);
+
+    bool processPendingTransaction(XBridgePacketPtr packet);
+    bool processTransactionHold(XBridgePacketPtr packet);
+    bool processTransactionInit(XBridgePacketPtr packet);
+    bool processTransactionCreate(XBridgePacketPtr packet);
+    bool processTransactionSign(XBridgePacketPtr packet);
+    bool processTransactionCommit(XBridgePacketPtr packet);
+    bool processTransactionFinished(XBridgePacketPtr packet);
+    bool processTransactionRollback(XBridgePacketPtr packet);
+    bool processTransactionDropped(XBridgePacketPtr packet);
 
 private:
     XBridge::SocketPtr m_socket;
 
     typedef std::map<const int, fastdelegate::FastDelegate1<XBridgePacketPtr, bool> > PacketProcessorsMap;
     PacketProcessorsMap m_processors;
+
+    std::string m_currency;
+    std::string m_address;
+    std::string m_port;
+    std::string m_user;
+    std::string m_passwd;
 };
 
 typedef std::shared_ptr<XBridgeSession> XBridgeSessionPtr;

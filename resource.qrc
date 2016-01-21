@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="address-book">src/res/address-book.png</file>
+        <file alias="editpaste">src/res/editpaste.png</file>
+    </qresource>
+</RCC>

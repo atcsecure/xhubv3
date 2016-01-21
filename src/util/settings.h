@@ -34,7 +34,6 @@ public:
     std::string appPath() const    { return m_appPath; }
 
     unsigned short dhtPort() const    { return m_dhtPort; }
-    unsigned short bridgePort() const { return m_bridgePort; }
 
     const std::vector<std::string> peers() const { return m_peers; }
 
@@ -90,7 +89,6 @@ private:
     boost::property_tree::ptree m_pt;
 
     unsigned short              m_dhtPort;
-    unsigned short              m_bridgePort;
 
     std::vector<std::string>    m_peers;
 

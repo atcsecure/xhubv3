@@ -5,12 +5,13 @@
 #include "xbridgesession.h"
 #include "xbridgeapp.h"
 #include "util/logger.h"
+#include "util/settings.h"
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 //*****************************************************************************
 //*****************************************************************************
-XBridge::XBridge(const unsigned short port)
+XBridge::XBridge()
     : m_timerIoWork(m_timerIo)
     , m_timerThread(boost::bind(&boost::asio::io_service::run, &m_timerIo))
     , m_timer(m_timerIo, boost::posix_time::seconds(TIMER_INTERVAL))
@@ -28,21 +29,31 @@ XBridge::XBridge(const unsigned short port)
             m_threads.create_thread(boost::bind(&boost::asio::io_service::run, ios));
         }
 
-        // listener
-        if (port)
-        {
-            // boost::asio::ip::tcp::endpoint ep(boost::asio::ip::tcp::v4(), port);
-            boost::asio::ip::tcp::endpoint ep(boost::asio::ip::address::from_string("127.0.0.1"), port);
-
-            m_acceptor = std::shared_ptr<boost::asio::ip::tcp::acceptor>
-                            (new boost::asio::ip::tcp::acceptor
-                                    (*m_services.front(), ep));
-
-            LOG() << "xbridge service listen at port " << port;
-        }
-
         m_timer.async_wait(boost::bind(&XBridge::onTimer, this));
 
+        // sessions
+        {
+            Settings & s = settings();
+            std::vector<std::string> wallets = s.exchangeWallets();
+            for (std::vector<std::string>::iterator i = wallets.begin(); i != wallets.end(); ++i)
+            {
+                // std::string label   = s.get<std::string>(*i + ".Title");
+                // std::string address = s.get<std::string>(*i + ".Address");
+                std::string ip      = s.get<std::string>(*i + ".Ip");
+                std::string port    = s.get<std::string>(*i + ".Port");
+                std::string user    = s.get<std::string>(*i + ".Username");
+                std::string passwd  = s.get<std::string>(*i + ".Password");
+
+                if (ip.empty() || port.empty() || user.empty() || passwd.empty())
+                {
+                    LOG() << "read wallet " << *i << " with empty parameters>";
+                    continue;
+                }
+
+                XBridgeSessionPtr session(new XBridgeSession(*i, ip, port, user, passwd));
+                session->requestAddressBook();
+            }
+        }
     }
     catch (std::exception & e)
     {
@@ -55,7 +66,6 @@ XBridge::XBridge(const unsigned short port)
 //*****************************************************************************
 void XBridge::run()
 {
-    listen();
     m_threads.join_all();
 }
 
@@ -70,42 +80,6 @@ void XBridge::stop()
     {
         (*i)->stop();
     }
-}
-
-//*****************************************************************************
-//*****************************************************************************
-void XBridge::listen()
-{
-    if (m_services.size() > 0 && m_acceptor)
-    {
-        m_services.push_back(m_services.front());
-        m_services.pop_front();
-
-        SocketPtr socket(new Socket(*m_services.front()));
-        m_acceptor->async_accept(*socket,
-                                 boost::bind(&XBridge::accept,
-                                             this, socket,
-                                             boost::asio::placeholders::error));
-    }
-}
-
-//******************************************************************************
-//******************************************************************************
-void XBridge::accept(XBridge::SocketPtr socket,
-                     const boost::system::error_code & error)
-{
-    if (error)
-    {
-        ERR() << "xbridge failed to accept TCP connection";
-        return;
-    }
-
-    // listen next
-    listen();
-
-    // create session for client
-    XBridgeSessionPtr session(new XBridgeSession);
-    session->start(socket);
 }
 
 //******************************************************************************
@@ -135,7 +109,8 @@ void XBridge::onTimer()
         io->post(boost::bind(&XBridgeSession::eraseExpiredPendingTransactions, session));
 
         // resend addressbook
-        io->post(boost::bind(&XBridgeSession::resendAddressBook, session));
+        // io->post(boost::bind(&XBridgeSession::resendAddressBook, session));
+        io->post(boost::bind(&XBridgeSession::getAddressBook, session));
     }
 
     m_timer.expires_at(m_timer.expires_at() + boost::posix_time::seconds(TIMER_INTERVAL));
