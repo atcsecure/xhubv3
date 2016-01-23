@@ -23,7 +23,6 @@ Settings & settings()
 Settings::Settings()
     : m_isExchangeEnabled(false)
     , m_dhtPort(Config::DHT_PORT)
-    , m_bridgePort(Config::BRIDGE_PORT)
 {
 }
 
@@ -58,10 +57,6 @@ bool Settings::parseCmdLine(int argc, char * argv[])
     if (options.count("dhtport"))
     {
         m_dhtPort = options["dhtport"].as<unsigned short>();
-    }
-    if (options.count("bridgeport"))
-    {
-        m_bridgePort = options["bridgeport"].as<unsigned short>();
     }
     if (options.count("peer"))
     {

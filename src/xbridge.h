@@ -26,24 +26,18 @@ public:
     typedef std::shared_ptr<boost::asio::ip::tcp::socket> SocketPtr;
 
 public:
-    XBridge(const unsigned short port);
+    XBridge();
 
     void run();
     void stop();
 
 private:
-    void listen();
-
-    void accept(XBridge::SocketPtr socket,
-                const boost::system::error_code & error);
-
     void onTimer();
 
 private:
     std::deque<IoServicePtr>                        m_services;
     std::deque<boost::asio::io_service::work>       m_works;
     boost::thread_group                             m_threads;
-    std::shared_ptr<boost::asio::ip::tcp::acceptor> m_acceptor;
 
     boost::asio::io_service                         m_timerIo;
     boost::asio::io_service::work                   m_timerIoWork;
