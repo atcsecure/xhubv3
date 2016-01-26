@@ -39,18 +39,19 @@ XBridge::XBridge()
             {
                 // std::string label   = s.get<std::string>(*i + ".Title");
                 // std::string address = s.get<std::string>(*i + ".Address");
-                std::string ip      = s.get<std::string>(*i + ".Ip");
-                std::string port    = s.get<std::string>(*i + ".Port");
-                std::string user    = s.get<std::string>(*i + ".Username");
-                std::string passwd  = s.get<std::string>(*i + ".Password");
+                std::string ip       = s.get<std::string>(*i + ".Ip");
+                std::string port     = s.get<std::string>(*i + ".Port");
+                std::string user     = s.get<std::string>(*i + ".Username");
+                std::string passwd   = s.get<std::string>(*i + ".Password");
+                boost::uint64_t COIN = s.get<boost::uint64_t>(*i + ".COIN", 0);
 
-                if (ip.empty() || port.empty() || user.empty() || passwd.empty())
+                if (ip.empty() || port.empty() || user.empty() || passwd.empty() || COIN == 0)
                 {
                     LOG() << "read wallet " << *i << " with empty parameters>";
                     continue;
                 }
 
-                XBridgeSessionPtr session(new XBridgeSession(*i, ip, port, user, passwd));
+                XBridgeSessionPtr session(new XBridgeSession(*i, ip, port, user, passwd, COIN));
                 session->requestAddressBook();
             }
         }

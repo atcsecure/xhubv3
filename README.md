@@ -6,12 +6,11 @@ Note: this library may be subtly broken or buggy. The code is released under the
 ========================================================================================================================
 #
 ## Blocknet's XBRIDGE the Blockchain Router
-## Currently implemented and working tech & milestones
+## Currently implemented and working tech
 - ECDH Messaging between blockchain's
 - Cross Trading between Chains
 
 ## In Development
-- Moving to full external app and API wallet interface
 - Blockchain Routing Protocol [BRP]
 - BRP Aims to provide seamless blockchain routing 
 

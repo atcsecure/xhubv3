@@ -54,6 +54,9 @@ struct XBridgeTransactionDescr
     boost::posix_time::ptime   created;
     boost::posix_time::ptime   txtime;
 
+    std::string                payTx;
+    std::string                revTx;
+
     XBridgePacketPtr           packet;
 
     XBridgeTransactionDescr()
@@ -109,6 +112,8 @@ private:
         toCurrency   = d.toCurrency;
         toAmount     = d.toAmount;
         state        = d.state;
+        payTx        = d.payTx;
+        revTx        = d.revTx;
         txtime       = boost::posix_time::second_clock::universal_time();
         if (created > d.created)
         {

@@ -33,9 +33,9 @@ THE SOFTWARE.
 
 #define _WIN32_WINNT 0x0600
 
+#include "../xbridgeapp.h"
 #include "../util/util.h"
 #include "../util/logger.h"
-#include "../xbridgeapp.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -63,7 +63,7 @@ THE SOFTWARE.
 #else
 // #include <w32api.h>
 // #define WINVER WindowsXP
-#include <ws2tcpip.h>
+// #include <ws2tcpip.h>
 #endif
 #endif
 

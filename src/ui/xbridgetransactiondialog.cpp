@@ -4,8 +4,8 @@
 #include "xbridgetransactiondialog.h"
 // #include "../ui_interface.h"
 // #include "../xbridgeconnector.h"
-#include "util/verify.h"
-#include "util/util.h"
+#include "../util/verify.h"
+#include "../util/util.h"
 // #include "../addressbookpage.h"
 #include "../xbridgeexchange.h"
 

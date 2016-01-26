@@ -28,6 +28,8 @@ else:CONFIG(debug, debug|release){
     error(Failed to include config.pri)
 }
 
+windows:DEFINES += WIN32
+
 #-------------------------------------------------
 withbreakpad {
 
@@ -78,7 +80,13 @@ SOURCES += \
     src/bitcoinrpc.cpp \
     src/json/json_spirit_reader.cpp \
     src/json/json_spirit_value.cpp \
-    src/json/json_spirit_writer.cpp
+    src/json/json_spirit_writer.cpp \
+    src/ctransaction.cpp \
+    src/script.cpp \
+    src/key.cpp \
+    src/keystore.cpp \
+    src/sync.cpp \
+    src/crypter.cpp
 
 #-------------------------------------------------
 HEADERS += \
@@ -113,7 +121,16 @@ HEADERS += \
     src/json/json_spirit_writer.h \
     src/json/json_spirit_writer_template.h \
     src/bignum.h \
-    src/uiconnector.h
+    src/uiconnector.h \
+    src/ctransaction.h \
+    src/script.h \
+    src/key.h \
+    src/serialize.h \
+    src/allocators.h \
+    src/keystore.h \
+    src/sync.h \
+    src/crypter.h \
+    src/base58.h
 
 #-------------------------------------------------
 DISTFILES += \

@@ -30,6 +30,24 @@ namespace rpc
                      const std::string & rpcport,
                      std::vector<Unspent> & entries);
 
+    bool signRawTransaction(const std::string & rpcuser,
+                            const std::string & rpcpasswd,
+                            const std::string & rpcip,
+                            const std::string & rpcport,
+                            std::string & rawtx);
+
+    bool sendRawTransaction(const std::string & rpcuser,
+                            const std::string & rpcpasswd,
+                            const std::string & rpcip,
+                            const std::string & rpcport,
+                            const std::string & rawtx);
+
+    bool getNewAddress(const std::string & rpcuser,
+                       const std::string & rpcpasswd,
+                       const std::string & rpcip,
+                       const std::string & rpcport,
+                       std::string & addr);
+
 } // namespace rpc
 
 #endif

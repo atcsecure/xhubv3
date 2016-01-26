@@ -17,7 +17,7 @@
 #include <set>
 
 #ifdef WIN32
-#include <Ws2tcpip.h>
+// #include <Ws2tcpip.h>
 #endif
 
 #include <QApplication>

@@ -2,7 +2,7 @@
 //******************************************************************************
 
 #include "xbridgetransactionsmodel.h"
-#include "xbridgeapp.h"
+#include "../xbridgeapp.h"
 // #include "xbridgeconnector.h"
 
 #include "../uiconnector.h"

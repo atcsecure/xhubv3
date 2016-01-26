@@ -25,7 +25,8 @@ public:
                    const std::string & address,
                    const std::string & port,
                    const std::string & user,
-                   const std::string & passwd);
+                   const std::string & passwd,
+                   const boost::uint64_t & COIN);
 
     std::string currency() const { return m_currency; }
 
@@ -121,11 +122,12 @@ private:
     typedef std::map<const int, fastdelegate::FastDelegate1<XBridgePacketPtr, bool> > PacketProcessorsMap;
     PacketProcessorsMap m_processors;
 
-    std::string m_currency;
-    std::string m_address;
-    std::string m_port;
-    std::string m_user;
-    std::string m_passwd;
+    std::string     m_currency;
+    std::string     m_address;
+    std::string     m_port;
+    std::string     m_user;
+    std::string     m_passwd;
+    boost::uint64_t m_COIN;
 };
 
 typedef std::shared_ptr<XBridgeSession> XBridgeSessionPtr;
