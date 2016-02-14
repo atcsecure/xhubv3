@@ -86,7 +86,8 @@ SOURCES += \
     src/key.cpp \
     src/keystore.cpp \
     src/sync.cpp \
-    src/crypter.cpp
+    src/crypter.cpp \
+    src/ui/mainwindow.cpp
 
 #-------------------------------------------------
 HEADERS += \
@@ -130,7 +131,8 @@ HEADERS += \
     src/keystore.h \
     src/sync.h \
     src/crypter.h \
-    src/base58.h
+    src/base58.h \
+    src/ui/mainwindow.h
 
 #-------------------------------------------------
 DISTFILES += \
@@ -167,3 +169,5 @@ LIBS += \
 
 RESOURCES += \
     resource.qrc
+
+win32:RC_FILE = xbridgep2p.rc

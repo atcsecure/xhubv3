@@ -33,6 +33,7 @@ public:
 
     void setPendingId(const uint256 & id);
     void setFromAmount(double amount);
+    void setFromCurrency(const QString & currency);
     void setToAmount(double amount);
     void setToCurrency(const QString & currency);
 

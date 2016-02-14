@@ -19,6 +19,7 @@ public:
     ~XBridgeAddressBookView();
 
     std::string selectedAddress() const { return m_selectedAddress; }
+    std::string selectedCurrency() const { return m_selectedCurrency; }
 
 
 private slots:
@@ -29,6 +30,7 @@ private:
 
 private:
     std::string m_selectedAddress;
+    std::string m_selectedCurrency;
 
     XBridgeAddressBookModel m_model;
 

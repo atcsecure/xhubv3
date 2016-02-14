@@ -55,6 +55,8 @@ public:
     bool cancelXBridgeTransaction(const uint256 & id);
     bool sendCancelTransaction(const uint256 & txid);
 
+    int peersCount() const;
+
 //signals:
 //    void showLogMessage(const QString & msg);
 
@@ -66,6 +68,8 @@ public:
 
     // void logMessage(const QString & msg);
 
+    // store session
+    void addSession(XBridgeSessionPtr session);
     // store session addresses in local table
     void storageStore(XBridgeSessionPtr session, const unsigned char * data);
     // clear local table

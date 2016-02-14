@@ -57,6 +57,7 @@ int dht_nodes(int af,
 void dht_dump_tables(std::string & s);
 int dht_get_nodes(struct sockaddr_in *sin, int *num,
                   struct sockaddr_in6 *sin6, int *num6);
+int dht_get_count(int *num, int *num6);
 int dht_send_message(const unsigned char * id, const unsigned char * message, const int length);
 int dht_send_broadcast(const unsigned char * message, const int length);
 int dht_send(const char * buf, size_t len, int flags,

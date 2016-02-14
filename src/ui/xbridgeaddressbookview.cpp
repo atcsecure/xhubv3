@@ -26,7 +26,8 @@ XBridgeAddressBookView::~XBridgeAddressBookView()
 //******************************************************************************
 void XBridgeAddressBookView::onAddressSelect(QModelIndex index)
 {
-    m_selectedAddress = std::get<XBridgeAddressBookModel::Address>(m_model.entry(index.row()));
+    m_selectedAddress  = std::get<XBridgeAddressBookModel::Address>(m_model.entry(index.row()));
+    m_selectedCurrency = std::get<XBridgeAddressBookModel::Currency>(m_model.entry(index.row()));
     accept();
 }
 

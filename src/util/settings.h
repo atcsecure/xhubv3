@@ -35,13 +35,13 @@ public:
 
     unsigned short dhtPort() const    { return m_dhtPort; }
 
-    const std::vector<std::string> peers() const { return m_peers; }
-
     std::string logPath() const
     {
         try { return m_pt.get<std::string>("Main.LogPath"); }
         catch (std::exception &) {} return std::string();
     }
+
+    std::vector<std::string> peers() const;
 
     std::vector<std::string> exchangeWallets() const;
 

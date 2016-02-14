@@ -26,6 +26,7 @@ public:
                    const std::string & port,
                    const std::string & user,
                    const std::string & passwd,
+                   const std::string & prefix,
                    const boost::uint64_t & COIN);
 
     std::string currency() const { return m_currency; }
@@ -127,6 +128,7 @@ private:
     std::string     m_port;
     std::string     m_user;
     std::string     m_passwd;
+    std::string     m_prefix;
     boost::uint64_t m_COIN;
 };
 

@@ -11,7 +11,7 @@
 #include "config.h"
 #include "uiconnector.h"
 
-#include "ui/xbridgetransactionsview.h"
+#include "ui/mainwindow.h"
 
 #include <thread>
 #include <chrono>
@@ -92,7 +92,7 @@ int XBridgeApp::exec()
     // m_threads.join_all();
     // return 0;
 
-    XBridgeTransactionsView view;
+    MainWindow view;
     view.show();
 
     return m_app->exec();
@@ -191,8 +191,8 @@ bool XBridgeApp::initDht()
     m_dhtStarted = false;
     m_dhtStop    = false;
 
-    // m_threads.create_thread(boost::bind(&XBridgeApp::dhtThreadProc, this));
-    m_threads.create_thread(boost::bind(&XBridgeApp::bridgeThreadProc, this));
+    m_threads.create_thread(boost::bind(&XBridgeApp::dhtThreadProc, this));
+    // m_threads.create_thread(boost::bind(&XBridgeApp::bridgeThreadProc, this));
 
     return true;
 }
@@ -205,8 +205,8 @@ bool XBridgeApp::stopDht()
     // m_dhtStop = true;
     // m_dhtThread.join();
 
-    LOG() << "stopping bridge thread";
-    m_bridge->stop();
+    // LOG() << "stopping bridge thread";
+    // m_bridge->stop();
 
     return true;
 }
@@ -628,8 +628,10 @@ void XBridgeApp::dhtThreadProc()
                     std::vector<unsigned char> & id      = std::get<0>(mpair);
                     std::vector<unsigned char> & message = std::get<1>(mpair);
 
-                    // std::string id      = util::base64_decode(mpair.first);
-                    // std ::string message = mpair.second;
+                    if (isKnownMessage(message))
+                    {
+                        continue;
+                    }
 
                     // check broadcast
                     if (id.empty())
@@ -727,9 +729,11 @@ void XBridgeApp::dhtThreadProc()
     {
         struct sockaddr_in sin[500];
         struct sockaddr_in6 sin6[500];
-        int num = 500, num6 = 500;
-        int i = dht_get_nodes(sin, &num, sin6, &num6);
-        LOG() << "Found " << i << "(" << num << " + " << num6 << ") good nodes";
+        int tmpNodes  = 500;
+        int tmpNodes6 = 500;
+
+        int i = dht_get_nodes(sin, &tmpNodes, sin6, &tmpNodes6);
+        LOG() << "Found " << i << "(" << tmpNodes << " + " << tmpNodes6 << ") good nodes";
     }
 
     dht_uninit();
@@ -813,6 +817,14 @@ int dht_random_bytes(unsigned char * buf, size_t size)
 void XBridgeApp::bridgeThreadProc()
 {
     m_bridge->run();
+}
+
+//*****************************************************************************
+//*****************************************************************************
+void XBridgeApp::addSession(XBridgeSessionPtr session)
+{
+    boost::mutex::scoped_lock l(m_sessionsLock);
+    m_sessionIds[session->currency()] = session;
 }
 
 //*****************************************************************************
@@ -1051,4 +1063,11 @@ bool XBridgeApp::sendCancelTransaction(const uint256 & txid)
 
     // cancelled
     return true;
+}
+
+//******************************************************************************
+//******************************************************************************
+int XBridgeApp::peersCount() const
+{
+    return dht_get_count(0, 0);
 }

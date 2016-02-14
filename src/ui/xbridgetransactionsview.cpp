@@ -2,6 +2,7 @@
 //******************************************************************************
 
 #include "xbridgetransactionsview.h"
+#include "../xbridgeapp.h"
 // #include "xbridgetransactiondialog.h"
 #include "../util/verify.h"
 
@@ -11,6 +12,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QMessageBox>
+#include <QLabel>
 
 //******************************************************************************
 //******************************************************************************
@@ -42,6 +44,9 @@ XBridgeTransactionsView::~XBridgeTransactionsView()
 void XBridgeTransactionsView::setupUi()
 {
     QVBoxLayout * vbox = new QVBoxLayout;
+
+    QLabel * l = new QLabel(tr("Blocknet Decentralized Exchange"), this);
+    vbox->addWidget(l);
 
     m_proxy.setSourceModel(&m_txModel);
     m_proxy.setDynamicSortFilter(true);

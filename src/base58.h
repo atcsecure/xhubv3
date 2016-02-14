@@ -286,24 +286,27 @@ public:
         SCRIPT_ADDRESS_TEST = 196,
     };
 
-    bool Set(const CKeyID &id) {
-        SetData(fTestNet ? PUBKEY_ADDRESS_TEST : PUBKEY_ADDRESS, &id, 20);
+    bool Set(const CKeyID &id, const char prefix) {
+        // SetData(fTestNet ? PUBKEY_ADDRESS_TEST : PUBKEY_ADDRESS, &id, 20);
+        SetData(prefix, &id, 20);
         return true;
     }
 
-    bool Set(const CScriptID &id) {
-        SetData(fTestNet ? SCRIPT_ADDRESS_TEST : SCRIPT_ADDRESS, &id, 20);
-        return true;
-    }
+//    bool Set(const CScriptID &id) {
+//        SetData(fTestNet ? SCRIPT_ADDRESS_TEST : SCRIPT_ADDRESS, &id, 20);
+//        return true;
+//    }
 
-    bool Set(const CTxDestination &dest)
-    {
-        return boost::apply_visitor(CBitcoinAddressVisitor(this), dest);
-    }
+//    bool Set(const CTxDestination &dest)
+//    {
+//        return boost::apply_visitor(CBitcoinAddressVisitor(this), dest);
+//    }
 
     bool IsValid() const
     {
         unsigned int nExpectedSize = 20;
+        return vchData.size() == nExpectedSize;
+
         bool fExpectTestNet = false;
         switch(nVersion)
         {
@@ -335,10 +338,10 @@ public:
     {
     }
 
-    CBitcoinAddress(const CTxDestination &dest)
-    {
-        Set(dest);
-    }
+//    CBitcoinAddress(const CTxDestination &dest)
+//    {
+//        Set(dest);
+//    }
 
     CBitcoinAddress(const std::string& strAddress)
     {
@@ -353,6 +356,11 @@ public:
     CTxDestination Get() const {
         if (!IsValid())
             return CNoDestination();
+
+        uint160 id;
+        memcpy(&id, &vchData[0], 20);
+        return CKeyID(id);
+
         switch (nVersion) {
         case PUBKEY_ADDRESS:
         case PUBKEY_ADDRESS_TEST: {
@@ -373,6 +381,12 @@ public:
     bool GetKeyID(CKeyID &keyID) const {
         if (!IsValid())
             return false;
+
+        uint160 id;
+        memcpy(&id, &vchData[0], 20);
+        keyID = CKeyID(id);
+        return true;
+
         switch (nVersion) {
         case PUBKEY_ADDRESS:
         case PUBKEY_ADDRESS_TEST: {
@@ -398,9 +412,9 @@ public:
     }
 };
 
-bool inline CBitcoinAddressVisitor::operator()(const CKeyID &id) const         { return addr->Set(id); }
-bool inline CBitcoinAddressVisitor::operator()(const CScriptID &id) const      { return addr->Set(id); }
-bool inline CBitcoinAddressVisitor::operator()(const CNoDestination &id) const { return false; }
+//bool inline CBitcoinAddressVisitor::operator()(const CKeyID &id) const         { return addr->Set(id); }
+//bool inline CBitcoinAddressVisitor::operator()(const CScriptID &id) const      { return addr->Set(id); }
+//bool inline CBitcoinAddressVisitor::operator()(const CNoDestination &id) const { return false; }
 
 /** A base58-encoded secret key */
 class CBitcoinSecret : public CBase58Data

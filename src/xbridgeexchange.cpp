@@ -139,6 +139,10 @@ bool XBridgeExchange::createTransaction(const uint256 & id,
                                                     sourceAmount,
                                                     destAddr, destCurrency,
                                                     destAmount));
+
+    LOG() << tr->hash1().ToString();
+    LOG() << tr->hash2().ToString();
+
     if (!tr->isValid())
     {
         return false;
@@ -504,10 +508,35 @@ std::list<XBridgeTransactionPtr> XBridgeExchange::finishedTransactions() const
 //*****************************************************************************
 std::vector<StringPair> XBridgeExchange::listOfWallets() const
 {
+    // TODO only enabled wallets
+//    std::vector<StringPair> result;
+//    for (WalletList::const_iterator i = m_wallets.begin(); i != m_wallets.end(); ++i)
+//    {
+//        result.push_back(std::make_pair(i->first, i->second.title));
+//    }
+//    return result;
+
+    Settings & s = settings();
+
     std::vector<StringPair> result;
-    for (WalletList::const_iterator i = m_wallets.begin(); i != m_wallets.end(); ++i)
+    std::vector<std::string> wallets = s.exchangeWallets();
+    for (std::vector<std::string>::iterator i = wallets.begin(); i != wallets.end(); ++i)
     {
-        result.push_back(std::make_pair(i->first, i->second.title));
+        std::string label   = s.get<std::string>(*i + ".Title");
+//        std::string address = s.get<std::string>(*i + ".Address");
+//        std::string ip      = s.get<std::string>(*i + ".Ip");
+//        unsigned int port   = s.get<unsigned int>(*i + ".Port");
+//        std::string user    = s.get<std::string>(*i + ".Username");
+//        std::string passwd  = s.get<std::string>(*i + ".Password");
+
+//        if (address.empty() || ip.empty() || port == 0 ||
+//                user.empty() || passwd.empty())
+//        {
+//            LOG() << "read wallet " << *i << " with empty parameters>";
+//            continue;
+//        }
+
+        result.push_back(std::make_pair(*i, label));
     }
     return result;
 }

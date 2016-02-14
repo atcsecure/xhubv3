@@ -123,6 +123,23 @@ bool Settings::write(const char * fileName)
 
 //******************************************************************************
 //******************************************************************************
+std::vector<std::string> Settings::peers() const
+{
+    std::string list;
+    TRY(list = m_pt.get<std::string>("Main.Peers"));
+
+    std::vector<std::string> strs;
+    if (list.size() > 0)
+    {
+        boost::split(strs, list, boost::is_any_of(",;"));
+    }
+
+    std::copy(m_peers.begin(), m_peers.end(), std::back_inserter(strs));
+    return strs;
+}
+
+//******************************************************************************
+//******************************************************************************
 std::vector<std::string> Settings::exchangeWallets() const
 {
     std::string list;

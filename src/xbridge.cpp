@@ -32,6 +32,7 @@ XBridge::XBridge()
         m_timer.async_wait(boost::bind(&XBridge::onTimer, this));
 
         // sessions
+        XBridgeApp & app = XBridgeApp::instance();
         {
             Settings & s = settings();
             std::vector<std::string> wallets = s.exchangeWallets();
@@ -43,16 +44,20 @@ XBridge::XBridge()
                 std::string port     = s.get<std::string>(*i + ".Port");
                 std::string user     = s.get<std::string>(*i + ".Username");
                 std::string passwd   = s.get<std::string>(*i + ".Password");
+                std::string prefix   = s.get<std::string>(*i + ".AddressPrefix");
                 boost::uint64_t COIN = s.get<boost::uint64_t>(*i + ".COIN", 0);
 
-                if (ip.empty() || port.empty() || user.empty() || passwd.empty() || COIN == 0)
+                if (ip.empty() || port.empty() ||
+                    user.empty() || passwd.empty() ||
+                    prefix.empty() || COIN == 0)
                 {
                     LOG() << "read wallet " << *i << " with empty parameters>";
                     continue;
                 }
 
-                XBridgeSessionPtr session(new XBridgeSession(*i, ip, port, user, passwd, COIN));
-                session->requestAddressBook();
+                XBridgeSessionPtr session(new XBridgeSession(*i, ip, port, user, passwd, prefix, COIN));
+                app.addSession(session);
+                // session->requestAddressBook();
             }
         }
     }
@@ -101,12 +106,12 @@ void XBridge::onTimer()
         io->post(boost::bind(&XBridgeSession::checkFinishedTransactions, session));
 
         // send list of wallets (broadcast)
-        io->post(boost::bind(&XBridgeSession::sendListOfWallets, session));
+        // io->post(boost::bind(&XBridgeSession::sendListOfWallets, session));
 
         // send transactions list
         io->post(boost::bind(&XBridgeSession::sendListOfTransactions, session));
 
-        // send transactions list
+        // erase expired tx
         io->post(boost::bind(&XBridgeSession::eraseExpiredPendingTransactions, session));
 
         // resend addressbook

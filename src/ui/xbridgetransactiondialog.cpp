@@ -93,6 +93,14 @@ void XBridgeTransactionDialog::setToAmount(double amount)
 
 //******************************************************************************
 //******************************************************************************
+void XBridgeTransactionDialog::setFromCurrency(const QString & currency)
+{
+    int idx = m_wallets.indexOf(currency);
+    m_currencyFrom->setCurrentIndex(idx);
+}
+
+//******************************************************************************
+//******************************************************************************
 void XBridgeTransactionDialog::setToCurrency(const QString & currency)
 {
     int idx = m_wallets.indexOf(currency);
@@ -320,6 +328,9 @@ void XBridgeTransactionDialog::onAddressBookFrom()
 //    }
     if (m_addressBook.exec() == QDialog::Accepted)
     {
+        QString currency = QString::fromStdString(m_addressBook.selectedCurrency());
+        setFromCurrency(currency);
+
         QString address = QString::fromStdString(m_addressBook.selectedAddress());
         m_addressFrom->setText(address);
         m_addressFrom->setFocus();
@@ -339,7 +350,10 @@ void XBridgeTransactionDialog::onAddressBookTo()
 {
     if (m_addressBook.exec() == QDialog::Accepted)
     {
-        QString address = QString::fromStdString(m_addressBook.selectedAddress());
+        QString currency = QString::fromStdString(m_addressBook.selectedCurrency());
+        setToCurrency(currency);
+
+        QString address  = QString::fromStdString(m_addressBook.selectedAddress());
         m_addressTo->setText(address);
         m_addressTo->setFocus();
     }

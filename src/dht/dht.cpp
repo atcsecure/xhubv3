@@ -373,6 +373,9 @@ static struct search *searches = NULL;
 static int numsearches;
 static unsigned short search_id;
 
+static int nodesCount  = 0;
+static int nodesCount6 = 0;
+
 /* The maximum number of nodes that we snub.  There is probably little
    reason to increase this value. */
 #ifndef DHT_MAX_BLACKLISTED
@@ -2180,6 +2183,8 @@ dht_periodic(const unsigned char * buf, size_t buflen,
                         gp = 1;
                         sr = find_search(ttid, from->sa_family);
                     }
+                    nodesCount  = nodes_len/26;
+                    nodesCount6 = nodes6_len/38;
                     debugf("Nodes found (%d+%d)%s!\n", nodes_len/26, nodes6_len/38,
                            gp ? " for get_peers" : "");
                     if(nodes_len % 26 != 0 || nodes6_len % 38 != 0) {
@@ -2615,6 +2620,22 @@ dht_get_nodes(struct sockaddr_in *sin, int *num,
     *num = i;
     *num6 = j;
     return i + j;
+}
+
+//*****************************************************************************
+//*****************************************************************************
+int dht_get_count(int *num, int *num6)
+{
+    if (num)
+    {
+        *num = nodesCount;
+    }
+    if (num6)
+    {
+        *num6 = nodesCount6;
+    }
+
+    return nodesCount+nodesCount6;
 }
 
 //*****************************************************************************

@@ -17,8 +17,18 @@ int main(int argc, char *argv[])
 {
     Settings & s = settings();
 
-    s.read((std::string(*argv) + ".conf").c_str());
-    s.parseCmdLine(argc, argv);
+    {
+        std::string path(*argv);
+        std::string::size_type pos = path.rfind(".");
+        if (pos != std::string::npos)
+        {
+            path = path.substr(0, pos);
+        }
+        path += ".conf";
+
+        s.read(path.c_str());
+        s.parseCmdLine(argc, argv);
+    }
 
     util::init();
 

@@ -170,8 +170,8 @@ std::string HexStr(const T itbegin, const T itend, bool fSpaces = false)
 
 std::string HexStr(const std::vector<unsigned char>& vch, bool fSpaces=false);
 
-std::vector<unsigned char> ParseHex(const char* psz);
-std::vector<unsigned char> ParseHex(const std::string& str);
+std::vector<char> ParseHex(const char* psz);
+std::vector<char> ParseHex(const std::string& str);
 
 inline uint160 Hash160(const std::vector<unsigned char>& vch)
 {

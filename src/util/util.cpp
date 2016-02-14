@@ -18,6 +18,10 @@
 
 #include <openssl/rand.h>
 
+#ifndef WIN32
+#include <execinfo.h>
+#endif
+
 //*****************************************************************************
 //*****************************************************************************
 namespace util
@@ -229,10 +233,10 @@ static const signed char phexdigit[256] =
   -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
   -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, };
 
-std::vector<unsigned char> ParseHex(const char* psz)
+std::vector<char> ParseHex(const char* psz)
 {
     // convert hex dump to vector
-    std::vector<unsigned char> vch;
+    std::vector<char> vch;
     while (true)
     {
         while (isspace(*psz))
@@ -240,7 +244,7 @@ std::vector<unsigned char> ParseHex(const char* psz)
         signed char c = phexdigit[(unsigned char)*psz++];
         if (c == (signed char)-1)
             break;
-        unsigned char n = (c << 4);
+        char n = (c << 4);
         c = phexdigit[(unsigned char)*psz++];
         if (c == (signed char)-1)
             break;
@@ -250,7 +254,7 @@ std::vector<unsigned char> ParseHex(const char* psz)
     return vch;
 }
 
-std::vector<unsigned char> ParseHex(const std::string& str)
+std::vector<char> ParseHex(const std::string& str)
 {
     return ParseHex(str.c_str());
 }

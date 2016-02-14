@@ -520,13 +520,14 @@ bool requestAddressBook(const std::string & rpcuser, const std::string & rpcpass
     {
         return false;
     }
+    LOG() << "received " << accounts.size() << " accounts";
     for (std::string & acc : accounts)
     {
         std::vector<std::string> addrs;
         if (getaddressesbyaccount(rpcuser, rpcpasswd, rpcip, rpcport, acc, addrs))
         {
             entries.push_back(std::make_pair(acc, addrs));
-            // LOG() << acc << " - " << boost::algorithm::join(addrs, ",");;
+            LOG() << acc << " - " << boost::algorithm::join(addrs, ",");
         }
     }
 
