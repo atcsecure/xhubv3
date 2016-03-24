@@ -5,6 +5,7 @@
 #include "logger.h"
 #include "../config.h"
 
+#include <algorithm>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/program_options.hpp>
@@ -31,6 +32,8 @@ Settings::Settings()
 bool Settings::parseCmdLine(int argc, char * argv[])
 {
     m_appPath = std::string(argv[0]);
+    std::replace(m_appPath.begin(), m_appPath.end(), '\\', '/');
+    m_appPath = m_appPath.substr(0, m_appPath.rfind('/'));
 
     boost::program_options::options_description description("allowed options");
     description.add_options()

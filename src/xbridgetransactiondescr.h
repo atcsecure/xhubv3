@@ -43,6 +43,9 @@ struct XBridgeTransactionDescr
 
     uint256                    id;
 
+    std::vector<unsigned char> hubAddress;
+    std::vector<unsigned char> myAddress;
+
     std::vector<unsigned char> from;
     std::string                fromCurrency;
     boost::uint64_t            fromAmount;
@@ -55,6 +58,7 @@ struct XBridgeTransactionDescr
     boost::posix_time::ptime   created;
     boost::posix_time::ptime   txtime;
 
+    uint256                    payTxId;
     std::string                payTx;
     std::string                revTx;
 
@@ -120,6 +124,10 @@ private:
         {
             created = d.created;
         }
+
+        payTxId     = d.payTxId;
+        hubAddress  = d.hubAddress;
+        myAddress   = d.myAddress;
     }
 };
 

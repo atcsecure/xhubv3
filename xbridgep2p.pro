@@ -4,11 +4,29 @@
 #
 #-------------------------------------------------
 
+#-------------------------------------------------
+!include($$PWD/config.pri) {
+    error(Failed to include config.pri)
+}
+
+#-------------------------------------------------
+withoutgui {
+
+message(no gui build)
+
+CONFIG   -= qt
+CONFIG   += console
+
+DEFINES += NO_GUI
+
+}
+else {
+
 QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-#CONFIG   -= qt
-#CONFIG   += console
+}
+
 #CONFIG   -= app_bundle
 CONFIG   += app
 CONFIG   += static
@@ -22,11 +40,6 @@ else:CONFIG(debug, debug|release){
     TARGET = ../bin/xbridgep2p-debug
 }
 
-
-#-------------------------------------------------
-!include($$PWD/config.pri) {
-    error(Failed to include config.pri)
-}
 
 windows:DEFINES += WIN32
 
@@ -72,11 +85,6 @@ SOURCES += \
     src/xbridgetransaction.cpp \
     src/util/settings.cpp \
     src/xbridgetransactionmember.cpp \
-    src/ui/xbridgetransactionsview.cpp \
-    src/ui/xbridgetransactionsmodel.cpp \
-    src/ui/xbridgetransactiondialog.cpp \
-    src/ui/xbridgeaddressbookview.cpp \
-    src/ui/xbridgeaddressbookmodel.cpp \
     src/bitcoinrpc.cpp \
     src/json/json_spirit_reader.cpp \
     src/json/json_spirit_value.cpp \
@@ -86,8 +94,7 @@ SOURCES += \
     src/key.cpp \
     src/keystore.cpp \
     src/sync.cpp \
-    src/crypter.cpp \
-    src/ui/mainwindow.cpp
+    src/crypter.cpp
 
 #-------------------------------------------------
 HEADERS += \
@@ -105,12 +112,7 @@ HEADERS += \
     src/xbridgetransactionmember.h \
     src/version.h \
     src/config.h \
-    src/ui/xbridgetransactionsview.h \
-    src/ui/xbridgetransactionsmodel.h \
     src/xbridgetransactiondescr.h \
-    src/ui/xbridgetransactiondialog.h \
-    src/ui/xbridgeaddressbookview.h \
-    src/ui/xbridgeaddressbookmodel.h \
     src/bitcoinrpc.h \
     src/json/json_spirit.h \
     src/json/json_spirit_error_position.h \
@@ -131,8 +133,28 @@ HEADERS += \
     src/keystore.h \
     src/sync.h \
     src/crypter.h \
-    src/base58.h \
+    src/base58.h
+
+#-------------------------------------------------
+!withoutgui {
+
+SOURCES += \
+    src/ui/mainwindow.cpp \
+    src/ui/xbridgetransactionsview.cpp \
+    src/ui/xbridgetransactionsmodel.cpp \
+    src/ui/xbridgetransactiondialog.cpp \
+    src/ui/xbridgeaddressbookview.cpp \
+    src/ui/xbridgeaddressbookmodel.cpp
+
+HEADERS += \
+    src/ui/xbridgetransactionsview.h \
+    src/ui/xbridgetransactionsmodel.h \
+    src/ui/xbridgetransactiondialog.h \
+    src/ui/xbridgeaddressbookview.h \
+    src/ui/xbridgeaddressbookmodel.h \
     src/ui/mainwindow.h
+
+} #withoutgui
 
 #-------------------------------------------------
 DISTFILES += \

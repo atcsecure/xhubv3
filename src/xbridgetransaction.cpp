@@ -160,11 +160,19 @@ XBridgeTransaction::State XBridgeTransaction::increaseStateCounter(XBridgeTransa
     }
     else if (state == trCommited && m_state == state)
     {
-        assert(false);
-        // if (++m_stateCounter >= 2)
+        if (from == m_first.dest())
+        {
+            m_firstStateChanged = true;
+        }
+        else if (from == m_second.dest())
+        {
+            m_secondStateChanged = true;
+        }
+
+        if (m_firstStateChanged && m_secondStateChanged)
         {
             m_state = trFinished;
-            // m_stateCounter = 0;
+            m_firstStateChanged = m_secondStateChanged = false;
         }
         return m_state;
     }

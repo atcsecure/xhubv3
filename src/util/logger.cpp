@@ -3,6 +3,7 @@
 
 #include "logger.h"
 #include "settings.h"
+#include "../uiconnector.h"
 
 #include <string>
 #include <fstream>
@@ -31,8 +32,8 @@ LOG::~LOG()
 {
     boost::mutex::scoped_lock l(logLocker);
 
-    const static std::string path     = settings().logPath();
-    const static bool logToFile       = !path.empty();
+    // const static std::string path     = settings().logPath().size() ? settings().logPath() : settings().appPath();
+    const static bool logToFile       = true; // !path.empty();
     static boost::gregorian::date day =
             boost::gregorian::day_clock::local_day();
     static std::string logFileName    = makeFileName();
@@ -41,6 +42,8 @@ LOG::~LOG()
 
     try
     {
+        uiConnector.NotifyLogMessage(str().c_str());
+
         if (logToFile)
         {
             boost::gregorian::date tmpday =
@@ -65,6 +68,10 @@ LOG::~LOG()
 //******************************************************************************
 const std::string LOG::makeFileName() const
 {
-    return settings().logPath() + "/xbridgep2p_" +
+    const static std::string path     = settings().logPath().size() ?
+                                        settings().logPath() :
+                                        settings().appPath();
+
+    return path + "/xbridgep2p_" +
             boost::gregorian::to_iso_string(boost::gregorian::day_clock::local_day()) + ".log";
 }

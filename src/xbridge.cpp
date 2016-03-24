@@ -114,6 +114,9 @@ void XBridge::onTimer()
         // erase expired tx
         io->post(boost::bind(&XBridgeSession::eraseExpiredPendingTransactions, session));
 
+        // check unconfirmed tx
+        io->post(boost::bind(&XBridgeSession::checkUnconfirmedTx, session));
+
         // resend addressbook
         // io->post(boost::bind(&XBridgeSession::resendAddressBook, session));
         io->post(boost::bind(&XBridgeSession::getAddressBook, session));

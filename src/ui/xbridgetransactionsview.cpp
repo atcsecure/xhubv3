@@ -5,6 +5,7 @@
 #include "../xbridgeapp.h"
 // #include "xbridgetransactiondialog.h"
 #include "../util/verify.h"
+#include "../uiconnector.h"
 
 #include <QTableView>
 #include <QHeaderView>
@@ -13,6 +14,7 @@
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QLabel>
+#include <QTextEdit>
 
 //******************************************************************************
 //******************************************************************************
@@ -86,9 +88,22 @@ void XBridgeTransactionsView::setupUi()
 
     hbox->addStretch();
 
+    QPushButton * showHideButton = new QPushButton(">>", this);
+    VERIFY(connect(showHideButton, SIGNAL(clicked()), this, SLOT(onShowLogs())));
+    hbox->addWidget(showHideButton);
+
     vbox->addLayout(hbox);
 
+    m_logStrings = new QTextEdit(this);
+    m_logStrings->setMinimumHeight(64);
+    m_logStrings->setReadOnly(true);
+    m_logStrings->setVisible(false);
+    vbox->addWidget(m_logStrings);
+
     setLayout(vbox);
+
+    uiConnector.NotifyLogMessage.connect
+            (boost::bind(&XBridgeTransactionsView::onLogString, this, _1));
 }
 
 //******************************************************************************
@@ -214,4 +229,27 @@ void XBridgeTransactionsView::onContextMenu(QPoint /*pt*/)
 
     contextMenu->exec(QCursor::pos());
     contextMenu->deleteLater();
+}
+
+//******************************************************************************
+//******************************************************************************
+void XBridgeTransactionsView::onShowLogs()
+{
+    QPushButton * btn = qobject_cast<QPushButton *>(sender());
+
+    bool visible = m_logStrings->isVisible();
+    btn->setText(visible ? ">>" : "<<");
+
+    m_logStrings->setVisible(!visible);
+}
+
+//******************************************************************************
+//******************************************************************************
+void XBridgeTransactionsView::onLogString(const std::string & str)
+{
+    m_logStrings->insertPlainText(QString::fromStdString(str));
+
+    QTextCursor c = m_logStrings->textCursor();
+    c.movePosition(QTextCursor::End);
+    m_logStrings->setTextCursor(c);
 }

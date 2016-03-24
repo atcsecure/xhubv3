@@ -11,7 +11,9 @@
 #include "config.h"
 #include "uiconnector.h"
 
+#ifndef NO_GUI
 #include "ui/mainwindow.h"
+#endif
 
 #include <thread>
 #include <chrono>
@@ -32,6 +34,8 @@ UIConnector uiConnector;
 boost::mutex                                  XBridgeApp::m_txLocker;
 std::map<uint256, XBridgeTransactionDescrPtr> XBridgeApp::m_pendingTransactions;
 std::map<uint256, XBridgeTransactionDescrPtr> XBridgeApp::m_transactions;
+boost::mutex                                  XBridgeApp::m_txUnconfirmedLocker;
+std::map<uint256, XBridgeTransactionDescrPtr> XBridgeApp::m_unconfirmed;
 
 //*****************************************************************************
 //*****************************************************************************
@@ -89,13 +93,16 @@ std::string XBridgeApp::version()
 //*****************************************************************************
 int XBridgeApp::exec()
 {
-    // m_threads.join_all();
-    // return 0;
+#ifdef NO_GUI
+    m_threads.join_all();
+    return 0;
 
+#else
     MainWindow view;
     view.show();
 
     return m_app->exec();
+#endif
 }
 
 //*****************************************************************************
@@ -110,7 +117,9 @@ const unsigned char hash[20] =
 //*****************************************************************************
 bool XBridgeApp::init(int argc, char *argv[])
 {
+#ifndef NO_GUI
     m_app.reset(new QApplication(argc, argv));
+#endif
     return true;
 }
 
@@ -951,6 +960,18 @@ void XBridgeApp::getAddressBook()
     for (SessionIdMap::iterator i = m_sessionIds.begin(); i != m_sessionIds.end(); ++i)
     {
         i->second->requestAddressBook();
+    }
+}
+
+//*****************************************************************************
+//*****************************************************************************
+void XBridgeApp::checkUnconfirmedTx()
+{
+    boost::mutex::scoped_lock l(m_addressBookLock);
+
+    for (SessionIdMap::iterator i = m_sessionIds.begin(); i != m_sessionIds.end(); ++i)
+    {
+        i->second->requestUnconfirmedTx();
     }
 }
 

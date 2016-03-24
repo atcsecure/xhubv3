@@ -409,7 +409,7 @@ bool listaccounts(const std::string & rpcuser, const std::string & rpcpasswd,
 {
     try
     {
-        LOG() << "rpc call <listaccounts>";
+        // LOG() << "rpc call <listaccounts>";
 
         Array params;
         Object reply = CallRPC(rpcuser, rpcpasswd, rpcip, rpcport,
@@ -463,7 +463,7 @@ bool getaddressesbyaccount(const std::string & rpcuser, const std::string & rpcp
 {
     try
     {
-        LOG() << "rpc call <getaddressesbyaccount>";
+        // LOG() << "rpc call <getaddressesbyaccount>";
 
         Array params;
         params.push_back(account);
@@ -520,14 +520,14 @@ bool requestAddressBook(const std::string & rpcuser, const std::string & rpcpass
     {
         return false;
     }
-    LOG() << "received " << accounts.size() << " accounts";
+    // LOG() << "received " << accounts.size() << " accounts";
     for (std::string & acc : accounts)
     {
         std::vector<std::string> addrs;
         if (getaddressesbyaccount(rpcuser, rpcpasswd, rpcip, rpcport, acc, addrs))
         {
             entries.push_back(std::make_pair(acc, addrs));
-            LOG() << acc << " - " << boost::algorithm::join(addrs, ",");
+            // LOG() << acc << " - " << boost::algorithm::join(addrs, ",");
         }
     }
 
@@ -761,6 +761,57 @@ bool getNewAddress(const std::string & rpcuser,
     }
 
     return true;
+}
+
+//*****************************************************************************
+//*****************************************************************************
+bool getTransaction(const std::string & rpcuser,
+                    const std::string & rpcpasswd,
+                    const std::string & rpcip,
+                    const std::string & rpcport,
+                    const std::string & txid)
+                    // std::string & tx)
+{
+    try
+    {
+        LOG() << "rpc call <gettransaction>";
+
+        Array params;
+        params.push_back(txid);
+        Object reply = CallRPC(rpcuser, rpcpasswd, rpcip, rpcport,
+                               "gettransaction", params);
+
+        // Parse reply
+        const Value & result = find_value(reply, "result");
+        const Value & error  = find_value(reply, "error");
+
+        if (error.type() != null_type)
+        {
+            // Error
+            LOG() << "error: " << write_string(error, false);
+            // int code = find_value(error.get_obj(), "code").get_int();
+            return false;
+        }
+        else if (result.type() != obj_type)
+        {
+            // Result
+            LOG() << "result not an object " <<
+                     (result.type() == null_type ? "" :
+                      result.type() == str_type  ? result.get_str() :
+                                                   write_string(result, true));
+            return false;
+        }
+
+        // transaction exists, success
+    }
+    catch (std::exception & e)
+    {
+        LOG() << "signrawtransaction exception " << e.what();
+        return false;
+    }
+
+    return true;
+
 }
 
 } // namespace rpc

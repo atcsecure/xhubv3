@@ -2430,7 +2430,7 @@ dht_periodic(const unsigned char * buf, size_t buflen,
                 if (!ptr)
                 {
                     // wtf?
-                    debugf("MESSAGE error!\n");
+                    debugf("BROADCAST error!\n");
                 }
                 else
                 {

@@ -73,7 +73,8 @@ linux-g++ {
 
 message(linux-g++ build)
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++11 -pthread
+QMAKE_LFLAGS += -pthread
 
 LIBS += \
     -lcrypto \
@@ -89,9 +90,13 @@ linux-g++-64 {
 
 message(linux-g++-64 build)
 
-QMAKE_CXXFLAGS += -std=c++11
+CONFIG += withoutgui
+
+QMAKE_CXXFLAGS += -std=c++11 -pthread
+QMAKE_LFLAGS += -pthread
 
 LIBS += \
+    -lpthread \
     -lcrypto \
     -lssl \
     -lboost_system \

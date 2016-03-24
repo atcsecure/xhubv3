@@ -12,7 +12,7 @@
 //******************************************************************************
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
-    setMinimumSize(QSize(800, 400));
+    setMinimumSize(QSize(800, 640));
 
     QString title = tr("Blocknet Decentralized Exchange v.%1")
             .arg(QString::fromStdString(XBridgeApp::version()));

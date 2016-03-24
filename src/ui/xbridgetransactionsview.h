@@ -14,6 +14,7 @@
 #include <QSortFilterProxyModel>
 
 class QTableView;
+class QTextEdit;
 
 //******************************************************************************
 //******************************************************************************
@@ -43,6 +44,9 @@ private slots:
 
     void onContextMenu(QPoint pt);
 
+    void onShowLogs();
+    void onLogString(const std::string & str);
+
 private:
     // WalletModel            * m_walletModel;
 
@@ -54,6 +58,8 @@ private:
     QTableView  * m_transactionsList;
 
     QModelIndex   m_contextMenuIndex;
+
+    QTextEdit   * m_logStrings;
 };
 
 #endif // XBRIDGETRANSACTIONSVIEW_H

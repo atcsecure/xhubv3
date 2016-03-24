@@ -75,7 +75,8 @@ public:
     bool updateTransactionWhenCommitedReceived(XBridgeTransactionPtr tx,
                                                const std::vector<unsigned char> & from,
                                                const uint256 & txhash);
-    // bool updateTransactionWhenConfirmedReceived(XBridgeTransactionPtr tx);
+    bool updateTransactionWhenConfirmedReceived(XBridgeTransactionPtr tx,
+                                                const std::vector<unsigned char> & from);
 
     bool updateTransaction(const uint256 & hash);
 
@@ -105,6 +106,9 @@ private:
 
     // TODO use deque and limit size
     std::set<uint256>                        m_walletTransactions;
+
+    mutable boost::mutex                     m_knownTxLock;
+    std::set<uint256>                        m_knownTransactions;
 };
 
 #endif // XBRIDGEEXCHANGE_H

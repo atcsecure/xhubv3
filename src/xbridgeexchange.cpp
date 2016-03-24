@@ -52,27 +52,27 @@ bool XBridgeExchange::init()
         std::string user    = s.get<std::string>(*i + ".Username");
         std::string passwd  = s.get<std::string>(*i + ".Password");
 
-        if (address.empty() || ip.empty() || port == 0 ||
+        if (/*address.empty() || */ip.empty() || port == 0 ||
                 user.empty() || passwd.empty())
         {
             LOG() << "read wallet " << *i << " with empty parameters>";
             continue;
         }
 
-        std::string decoded = util::base64_decode(address);
-        if (address.empty())
-        {
-            LOG() << "incorrect wallet address for " << *i;
-            continue;
-        }
+//        std::string decoded = util::base64_decode(address);
+//        if (address.empty())
+//        {
+//            LOG() << "incorrect wallet address for " << *i;
+//            continue;
+//        }
 
-        std::copy(decoded.begin(), decoded.end(), std::back_inserter(m_wallets[*i].address));
-        if (m_wallets[*i].address.size() != 20)
-        {
-            LOG() << "incorrect wallet address size for " << *i;
-            m_wallets.erase(*i);
-            continue;
-        }
+//        std::copy(decoded.begin(), decoded.end(), std::back_inserter(m_wallets[*i].address));
+//        if (m_wallets[*i].address.size() != 20)
+//        {
+//            LOG() << "incorrect wallet address size for " << *i;
+//            m_wallets.erase(*i);
+//            continue;
+//        }
 
         m_wallets[*i].title   = label;
         m_wallets[*i].ip      = ip;
@@ -132,6 +132,14 @@ bool XBridgeExchange::createTransaction(const uint256 & id,
 {
     DEBUG_TRACE();
 
+//    {
+//        boost::mutex::scoped_lock l(m_knownTxLock);
+//        if (m_knownTransactions.count(transactionId))
+//        {
+//            return false;
+//        }
+//        m_knownTransactions.insert(transactionId);
+//    }
     // transactionId = id;
 
     XBridgeTransactionPtr tr(new XBridgeTransaction(id,
@@ -340,16 +348,17 @@ bool XBridgeExchange::updateTransactionWhenCommitedReceived(XBridgeTransactionPt
 
 //*****************************************************************************
 //*****************************************************************************
-//bool XBridgeExchange::updateTransactionWhenConfirmedReceived(XBridgeTransactionPtr tx)
-//{
-//    // update transaction state
-//    if (tx->increaseStateCounter(XBridgeTransaction::trCommited) == XBridgeTransaction::trFinished)
-//    {
-//        return true;
-//    }
+bool XBridgeExchange::updateTransactionWhenConfirmedReceived(XBridgeTransactionPtr tx,
+                                                             const std::vector<unsigned char> & from)
+{
+    // update transaction state
+    if (tx->increaseStateCounter(XBridgeTransaction::trCommited, from) == XBridgeTransaction::trFinished)
+    {
+        return true;
+    }
 
-//    return false;
-//}
+    return false;
+}
 
 //*****************************************************************************
 //*****************************************************************************

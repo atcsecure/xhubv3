@@ -48,6 +48,13 @@ namespace rpc
                        const std::string & rpcport,
                        std::string & addr);
 
+    bool getTransaction(const std::string & rpcuser,
+                        const std::string & rpcpasswd,
+                        const std::string & rpcip,
+                        const std::string & rpcport,
+                        const std::string & txid);
+                        // std::string & tx);
+
 } // namespace rpc
 
 #endif
