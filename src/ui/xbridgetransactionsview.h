@@ -45,7 +45,7 @@ private slots:
     void onContextMenu(QPoint pt);
 
     void onShowLogs();
-    void onLogString(const std::string & str);
+    void onLogString(const std::string str);
 
 private:
     // WalletModel            * m_walletModel;

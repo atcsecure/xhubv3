@@ -26,11 +26,15 @@ public:
     LOG(const char reason = 'I');
     virtual ~LOG();
 
+    static std::string logFileName();
+
 private:
-    const std::string makeFileName() const;
+    static std::string makeFileName();
 
 private:
     char m_r;
+
+    static std::string m_logFileName;
 };
 
 #endif // LOGGER_H

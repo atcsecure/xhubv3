@@ -6,6 +6,7 @@
 #include "../uiconnector.h"
 
 #include <string>
+#include <sstream>
 #include <fstream>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -13,6 +14,11 @@
 #include <boost/thread/mutex.hpp>
 
 boost::mutex logLocker;
+
+//******************************************************************************
+//******************************************************************************
+// static
+std::string LOG::m_logFileName;
 
 //******************************************************************************
 //******************************************************************************
@@ -28,6 +34,14 @@ LOG::LOG(const char reason)
 
 //******************************************************************************
 //******************************************************************************
+// static
+std::string LOG::logFileName()
+{
+    return m_logFileName;
+}
+
+//******************************************************************************
+//******************************************************************************
 LOG::~LOG()
 {
     boost::mutex::scoped_lock l(logLocker);
@@ -36,13 +50,17 @@ LOG::~LOG()
     const static bool logToFile       = true; // !path.empty();
     static boost::gregorian::date day =
             boost::gregorian::day_clock::local_day();
-    static std::string logFileName    = makeFileName();
+    if (m_logFileName.empty())
+    {
+        m_logFileName    = makeFileName();
+    }
 
     std::cout << str().c_str();
 
     try
     {
-        uiConnector.NotifyLogMessage(str().c_str());
+        std::string copy(str().c_str());
+        uiConnector.NotifyLogMessage(copy);
 
         if (logToFile)
         {
@@ -51,11 +69,11 @@ LOG::~LOG()
 
             if (day != tmpday)
             {
-                logFileName = makeFileName();
+                m_logFileName = makeFileName();
                 day = tmpday;
             }
 
-            std::ofstream file(logFileName.c_str(), std::ios_base::app);
+            std::ofstream file(m_logFileName.c_str(), std::ios_base::app);
             file << str().c_str();
         }
     }
@@ -66,12 +84,15 @@ LOG::~LOG()
 
 //******************************************************************************
 //******************************************************************************
-const std::string LOG::makeFileName() const
+// static
+std::string LOG::makeFileName()
 {
     const static std::string path     = settings().logPath().size() ?
                                         settings().logPath() :
                                         settings().appPath();
 
-    return path + "/xbridgep2p_" +
-            boost::gregorian::to_iso_string(boost::gregorian::day_clock::local_day()) + ".log";
+    return path +
+            "/xbridgep2p_" +
+            boost::posix_time::to_iso_string(boost::posix_time::second_clock::local_time()) +
+            ".log";
 }

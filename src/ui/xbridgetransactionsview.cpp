@@ -6,6 +6,7 @@
 // #include "xbridgetransactiondialog.h"
 #include "../util/verify.h"
 #include "../uiconnector.h"
+#include "../util/logger.h"
 
 #include <QTableView>
 #include <QHeaderView>
@@ -30,6 +31,8 @@ XBridgeTransactionsView::XBridgeTransactionsView(QWidget *parent)
 //******************************************************************************
 XBridgeTransactionsView::~XBridgeTransactionsView()
 {
+    uiConnector.NotifyLogMessage.disconnect
+            (boost::bind(&XBridgeTransactionsView::onLogString, this, _1));
 
 }
 
@@ -241,15 +244,30 @@ void XBridgeTransactionsView::onShowLogs()
     btn->setText(visible ? ">>" : "<<");
 
     m_logStrings->setVisible(!visible);
+
+    if (!visible)
+    {
+        m_logStrings->clear();
+
+        // show, load all logs
+        QFile f(QString::fromStdString(LOG::logFileName()));
+        if (f.open(QIODevice::ReadOnly))
+        {
+            m_logStrings->insertPlainText(f.readAll());
+        }
+    }
 }
 
 //******************************************************************************
 //******************************************************************************
-void XBridgeTransactionsView::onLogString(const std::string & str)
+void XBridgeTransactionsView::onLogString(const std::string str)
 {
-    m_logStrings->insertPlainText(QString::fromStdString(str));
+    const QString qstr = QString::fromStdString(str);
+    m_logStrings->insertPlainText(qstr);
 
-    QTextCursor c = m_logStrings->textCursor();
-    c.movePosition(QTextCursor::End);
-    m_logStrings->setTextCursor(c);
+//    QTextCursor c = m_logStrings->textCursor();
+//    c.movePosition(QTextCursor::End);
+//    m_logStrings->setTextCursor(c);
+
+//    m_logStrings->ensureCursorVisible();
 }
