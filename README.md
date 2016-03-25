@@ -9,6 +9,7 @@ Note: this library may be subtly broken or buggy. The code is released under the
 ## Currently implemented and working tech
 - ECDH Messaging between blockchain's
 - Cross Trading between Chains
+- DX Supports BTC, LTC, XC, Swift and api compatible wallets
 
 ## In Development
 - Blockchain Routing Protocol [BRP]
