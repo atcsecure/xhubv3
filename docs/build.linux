@@ -1,0 +1,10 @@
+## Ubuntu / Debian
+Install packages via apt
+- apt-get install qt5-qmake libqt5core5a libqt5gui5 qtbase5-dev-tools qtbase5-dev libcrypto++-dev libboost-all-dev build-essential
+
+# Copy config.orig.pri config.pri
+
+- qmake xbridgep2p.conf
+- make -f ./Makefile
+
+# ../bin/xbridgep2p --peers=x.x.x.x:33330
